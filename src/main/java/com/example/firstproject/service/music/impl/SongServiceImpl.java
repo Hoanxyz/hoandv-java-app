@@ -3,6 +3,9 @@ package com.example.firstproject.service.music.impl;
 import com.example.firstproject.entity.music.SongEntity;
 import com.example.firstproject.repository.music.SongRepository;
 import com.example.firstproject.service.music.SongService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,6 +28,12 @@ public class SongServiceImpl implements SongService {
     }
 
     @Override
+    public Page<SongEntity> getSongs(int page, int size) {
+        Pageable pageAble = PageRequest.of(page, size);
+        return this.songRepository.findAll(pageAble);
+    }
+
+    @Override
     public SongEntity createSong(MultipartFile file) {
         try {
             byte[] fileData = file.getBytes();
@@ -40,5 +49,11 @@ public class SongServiceImpl implements SongService {
     @Override
     public Optional<SongEntity> getSong(int id) {
         return this.songRepository.findById(id);
+    }
+
+    @Override
+    public Page<SongEntity> searchSong(int page, int size, String text) {
+        Pageable pageable = PageRequest.of(page, size);
+        return this.songRepository.findByNameContainingIgnoreCase(text, pageable);
     }
 }

@@ -4,6 +4,7 @@ import com.example.firstproject.entity.music.SongEntity;
 import com.example.firstproject.repository.music.SongRepository;
 import com.example.firstproject.service.music.impl.SongServiceImpl;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,6 +33,7 @@ public class SongController {
         List<SongEntity> listSongs = this.songService.getAllSongs();
         return ResponseEntity.ok(listSongs);
     }
+
 
     @PostMapping("/create")
     public ResponseEntity<SongEntity> createSong(@RequestParam("file") MultipartFile file) {
@@ -70,5 +72,20 @@ public class SongController {
             return new ResponseEntity<>(resource, header, HttpStatus.OK);
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/get-songs")
+    public ResponseEntity<Page<SongEntity>> getAllSongs(@RequestParam("page") int page,
+                                                        @RequestParam("size") int size) {
+        Page<SongEntity> listSongs = this.songService.getSongs(page, size);
+        return ResponseEntity.ok(listSongs);
+    }
+
+    @GetMapping("/search-songs")
+    public ResponseEntity<Page<SongEntity>> searchSongs(@RequestParam("page") int page,
+                                                        @RequestParam("size") int size,
+                                                        @RequestParam("text") String text) {
+        Page<SongEntity> listSongs = this.songService.searchSong(page, size, text);
+        return ResponseEntity.ok(listSongs);
     }
 }
