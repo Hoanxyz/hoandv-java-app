@@ -23,9 +23,6 @@ public class UserEntity {
     private String password;
 
     @Column
-    private String songIds;
-
-    @Column
     private String email;
 
     @Column

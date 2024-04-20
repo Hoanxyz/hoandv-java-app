@@ -27,17 +27,17 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
-    @Override
-    public UserEntity loginUser(UserEntity user) {
-        UserEntity existingUser = userRepository.findByUsername(user.getUsername());
-
-        // Check if the user exists and the password matches
-        if (existingUser == null || !existingUser.getPassword().equals(user.getPassword())) {
-            throw new IllegalArgumentException("User name hoặc password sai.");
-        }
-
-        return existingUser;
-    }
+//    @Override
+//    public UserEntity loginUser(UserEntity user) {
+//        UserEntity existingUser = userRepository.findByUsername(user.getUsername());
+//
+//        // Check if the user exists and the password matches
+//        if (existingUser == null || !existingUser.getPassword().equals(user.getPassword())) {
+//            throw new IllegalArgumentException("User name hoặc password sai.");
+//        }
+//
+//        return existingUser;
+//    }
 
     @Override
     public UserEntity getUserByName(String username) {
@@ -45,10 +45,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserEntity findByUserId(Long id, String password) {
+        UserEntity user = this.userRepository.findById(id).orElse(null);
+        if (user != null) {
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            boolean matches = passwordEncoder.matches(password, user.getPassword());
+            if (matches) {
+                return user;
+            } else {
+                throw new IllegalArgumentException("Sai mật khẩu roài.");
+            }
+        }
+        return null;
+    }
+
+    @Override
     public UserEntity updateUser(UserEntity user, long id) {
         UserEntity existingUser = userRepository.findById(id).orElse(null);
         if (existingUser != null) {
-            existingUser.setSongIds(user.getSongIds());
             return userRepository.save(existingUser);
         }
         return null;

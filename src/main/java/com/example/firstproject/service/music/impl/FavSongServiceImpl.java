@@ -28,7 +28,11 @@ public class FavSongServiceImpl implements FavSongService {
 
     @Override
     public List<Long> findFavSongIdsByUserId(long id) {
-        return this.favSongRepository.findFavSongIdsByUserId(id);
+        try {
+            return this.favSongRepository.findFavSongIdsByUserId(id);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
     @Override

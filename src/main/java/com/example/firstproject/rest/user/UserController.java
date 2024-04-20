@@ -12,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -63,8 +64,20 @@ public class UserController {
     }
 
     @PostMapping("/update/{id}")
-    public ResponseEntity<UserEntity> updateUser(@PathVariable("id") Integer id, @RequestBody UserEntity user) {
-        UserEntity userUpdated = this.userService.updateUser(user, id);
+    public ResponseEntity<UserEntity> updateUser(
+            @PathVariable("id") Long id,
+            @RequestBody UserEntity user,
+            @RequestParam String password) {
+        UserEntity currentUser = this.userService.findByUserId(id, password);
+        currentUser.setEmail(user.getEmail());
+        currentUser.setLastname(user.getLastname());
+        currentUser.setFirstname(user.getFirstname());
+        if (user.getPassword() != null) {
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            String encodedPassword = passwordEncoder.encode(user.getPassword());
+            currentUser.setPassword(encodedPassword);
+        }
+        UserEntity userUpdated = this.userService.updateUser(currentUser, id);
         return ResponseEntity.status(HttpStatus.OK).body(userUpdated);
     }
 }
