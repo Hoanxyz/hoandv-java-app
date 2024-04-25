@@ -22,5 +22,10 @@ public interface SongRepository extends JpaRepository<SongEntity, Long> {
     @Query("SELECT s.id FROM SongEntity s WHERE s.id = (SELECT MAX(id) FROM SongEntity)")
     Long findNewestSong();
 
+    @Query("SELECT s.id FROM SongEntity s WHERE s.id = (SELECT MIN(id) FROM SongEntity)")
+    Long findLastSong();
+
     SongEntity findFirstByIdLessThanOrderByIdDesc(Long id);
+
+    SongEntity findFirstByIdGreaterThanOrderByIdAsc(Long id);
 }

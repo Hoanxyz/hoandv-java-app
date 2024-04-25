@@ -25,5 +25,9 @@ public interface SongService {
 
     Long findNewestSong();
 
+    Long findLastSong();
+
     Long findNextSong(long id);
+
+    Long findPreSong(long id);
 }

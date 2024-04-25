@@ -1,6 +1,7 @@
 package com.example.firstproject.rest.music;
 
 import com.example.firstproject.dto.music.FavSongDto;
+import com.example.firstproject.dto.music.SongDataDto;
 import com.example.firstproject.dto.music.SongDto;
 import com.example.firstproject.entity.music.FavSongEntity;
 import com.example.firstproject.entity.music.SongEntity;
@@ -15,6 +16,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Base64;
 import java.util.List;
 
 @RestController
@@ -52,6 +55,16 @@ public class SongController {
             header.add(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION);
             header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
             return new ResponseEntity<>(resource, header, HttpStatus.OK);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("get-song-base-64/{id}")
+    public ResponseEntity<SongDataDto> songDataBase64(@PathVariable long id) {
+        SongEntity song = this.songService.getSong(id);
+        if (song != null) {
+            SongDataDto songRes = new SongDataDto(song.getName(), Base64.getEncoder().encodeToString(song.getFileData()));
+            return new ResponseEntity<>(songRes, HttpStatus.OK);
         }
         return ResponseEntity.notFound().build();
     }
@@ -133,6 +146,16 @@ public class SongController {
     public ResponseEntity<Long> findNextSong(@PathVariable("id") long id) {
         try {
             Long idNext = this.songService.findNextSong(id);
+            return ResponseEntity.ok(idNext);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    @GetMapping("/get-pre-song/{id}")
+    public ResponseEntity<Long> findPreSong(@PathVariable("id") long id) {
+        try {
+            Long idNext = this.songService.findPreSong(id);
             return ResponseEntity.ok(idNext);
         } catch (Exception e) {
             throw new IllegalArgumentException(e);

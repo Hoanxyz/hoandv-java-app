@@ -22,4 +22,6 @@ public interface FavSongRepository extends JpaRepository<FavSongEntity, Long> {
 
     @Query("select fs.id from FavSongEntity fs where fs.userId = :userId and fs.songId = :songId")
     Long findFavSongEntityId(long userId, long songId);
+
+    void deleteAllBySongId(Long songId);
 }
