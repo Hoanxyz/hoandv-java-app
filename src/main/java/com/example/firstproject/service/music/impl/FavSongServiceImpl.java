@@ -1,6 +1,6 @@
 package com.example.firstproject.service.music.impl;
 
-import com.example.firstproject.dto.music.FavSongDto;
+import com.example.firstproject.dto.music.SongDto;
 import com.example.firstproject.entity.music.FavSongEntity;
 import com.example.firstproject.repository.music.FavSongRepository;
 import com.example.firstproject.service.music.FavSongService;
@@ -21,7 +21,7 @@ public class FavSongServiceImpl implements FavSongService {
     }
 
     @Override
-    public Page<FavSongDto> findFavSongsByUser(int page, int size, long userId) {
+    public Page<SongDto> findFavSongsByUser(int page, int size, long userId) {
         Pageable pageable = PageRequest.of(page, size);
         return this.favSongRepository.findFavSongsByUserId(userId, pageable);
     }

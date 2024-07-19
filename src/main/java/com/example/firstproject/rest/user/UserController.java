@@ -80,4 +80,9 @@ public class UserController {
         UserEntity userUpdated = this.userService.updateUser(currentUser, id);
         return ResponseEntity.status(HttpStatus.OK).body(userUpdated);
     }
+
+    @GetMapping("/check-token-valid")
+    public ResponseEntity<?> checkValidToken() {
+        return ResponseEntity.status(HttpStatus.OK).body("Valid Token");
+    }
 }

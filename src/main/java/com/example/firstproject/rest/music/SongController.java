@@ -1,8 +1,7 @@
 package com.example.firstproject.rest.music;
 
-import com.example.firstproject.dto.music.FavSongDto;
-import com.example.firstproject.dto.music.SongDataDto;
 import com.example.firstproject.dto.music.SongDto;
+import com.example.firstproject.dto.music.SongDataDto;
 import com.example.firstproject.entity.music.FavSongEntity;
 import com.example.firstproject.entity.music.SongEntity;
 import com.example.firstproject.rest.request.SearchSongRequest;
@@ -105,8 +104,8 @@ public class SongController {
     }
 
     @PostMapping("/get-fav")
-    public ResponseEntity<Page<FavSongDto>> getFavSongs(@RequestBody SearchSongRequest request) {
-        Page<FavSongDto> favSongs = this.favSongService.findFavSongsByUser(
+    public ResponseEntity<Page<SongDto>> getFavSongs(@RequestBody SearchSongRequest request) {
+        Page<SongDto> favSongs = this.favSongService.findFavSongsByUser(
                 request.getPage(), request.getSize(), request.getUserId()
         );
         return ResponseEntity.ok(favSongs);

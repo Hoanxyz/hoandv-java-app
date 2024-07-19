@@ -45,7 +45,6 @@ public class JwtService {
     }
 
     private Claims extractAllClaims(String token) {
-        String a = "123";
         return Jwts
                 .parserBuilder()
                 .setSigningKey(getSignKey())
