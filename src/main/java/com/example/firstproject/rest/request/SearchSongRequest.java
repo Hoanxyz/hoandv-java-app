@@ -12,9 +12,13 @@ public class SearchSongRequest {
 
     private int size;
 
+    private String searchType;
+
     private String textSearch;
 
     private List<Long> ids;
 
     private long userId;
+
+    private long collectionId;
 }

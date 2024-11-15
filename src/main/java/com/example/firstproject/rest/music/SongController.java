@@ -4,11 +4,15 @@ import com.example.firstproject.dto.music.SongDto;
 import com.example.firstproject.dto.music.SongDataDto;
 import com.example.firstproject.entity.music.FavSongEntity;
 import com.example.firstproject.entity.music.SongEntity;
+import com.example.firstproject.exceptionHandler.ErrorMessage;
 import com.example.firstproject.rest.request.SearchSongRequest;
 import com.example.firstproject.service.music.FavSongService;
+import com.example.firstproject.service.music.impl.SongCollectionServiceImpl;
 import com.example.firstproject.service.music.impl.SongServiceImpl;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,12 +29,16 @@ public class SongController {
     private final SongServiceImpl songService;
     private final FavSongService favSongService;
 
+    private final SongCollectionServiceImpl songCollectionService;
+
     public SongController(
             SongServiceImpl songService,
-            FavSongService favSongService
+            FavSongService favSongService,
+            SongCollectionServiceImpl songCollectionService
     ) {
         this.songService = songService;
         this.favSongService = favSongService;
+        this.songCollectionService = songCollectionService;
     }
 
 
@@ -69,20 +77,25 @@ public class SongController {
     }
 
     @PostMapping("/search-songs")
-    public ResponseEntity<Page<SongDto>> searchSongs(@RequestBody SearchSongRequest searchSongRequest) {
-        String text = searchSongRequest.getTextSearch();
-        int page = searchSongRequest.getPage();
-        int size = searchSongRequest.getSize();
-        List<Long> ids = searchSongRequest.getIds();
+    public ResponseEntity<Page<SongDto>> searchSongs(@RequestBody SearchSongRequest request) {
+        String text = request.getTextSearch();
+        int page = request.getPage();
+        int size = request.getSize();
         Page<SongDto> listSongs;
-        if (ids != null && !ids.isEmpty()) {
-            listSongs = this.songService.searchSongByIds(page, size, ids);
-        } else {
-            if (text != null && !text.trim().isEmpty()) {
+        switch(request.getSearchType()) {
+            case "FAV":
+                listSongs = this.favSongService.findFavSongsByUser(request.getPage(), request.getSize(), request.getUserId());
+                break;
+            case "COLLECTION":
+                Pageable pageable = PageRequest.of(page, size);
+                listSongs = this.songCollectionService.getSongsInCollectionPage(request.getCollectionId(), pageable);
+                break;
+            case "SEARCH":
                 listSongs = this.songService.searchSongByName(page, size, text);
-            } else {
+                if (listSongs.isEmpty()) throw new ErrorMessage(1234, "Không có bài hát nào");
+                break;
+            default:
                 listSongs = this.songService.searchSongByName(page, size, "");
-            }
         }
         return ResponseEntity.ok(listSongs);
     }
