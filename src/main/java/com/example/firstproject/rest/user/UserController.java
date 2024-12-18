@@ -42,6 +42,16 @@ public class UserController {
         }
     }
 
+    @PostMapping("/is-user-exist")
+    public ResponseEntity<Object> isUserExist(@RequestBody UserEntity user) {
+        try {
+            Boolean isExist = this.userService.isUserExist(user.getUsername());
+            return ResponseEntity.status(HttpStatus.OK).body(isExist);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
 
     @GetMapping("/get-user-by-name")
     public ResponseEntity<UserEntity> getUserByName(@RequestParam("name") String name) {

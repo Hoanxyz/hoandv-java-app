@@ -36,6 +36,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/user/login",
                                 "/user/register",
+                                "/user/is-user-exist",
                                 "/music/list-songs",
                                 "/song/search-songs"
                         ).permitAll()

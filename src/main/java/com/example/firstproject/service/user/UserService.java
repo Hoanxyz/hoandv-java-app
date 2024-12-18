@@ -10,4 +10,6 @@ public interface UserService {
     UserEntity findByUserId(Long id, String password);
 
     UserEntity updateUser(UserEntity user, long id);
+
+    Boolean isUserExist(String userName);
 }
